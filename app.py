@@ -32,22 +32,39 @@ for fecha, fiesta in fiestas.items():
     fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
     calendar_df.loc[calendar_df["Fecha"] == fecha_obj, "Evento"] = fiesta
 
-# Mostrar el calendario filtrado por semana
-st.sidebar.subheader("Selecciona una semana")
-start_week = st.sidebar.date_input("Inicio de la semana", value=datetime(2024, 1, 1))
-end_week = start_week + timedelta(days=6)
+# Mostrar el calendario filtrado por mes
+month = st.sidebar.selectbox("Selecciona un mes", options=pd.date_range(start=start_date, end=end_date, freq='MS').strftime('%B %Y'))
 
-# Convertir las fechas a formato datetime para evitar conflictos de tipos
-start_week = pd.to_datetime(start_week)
-end_week = pd.to_datetime(end_week)
+# Filtrar las fechas del mes seleccionado
+month_start = datetime.strptime(month, "%B %Y")
+month_end = month_start + pd.DateOffset(months=1) - timedelta(days=1)
+month_view = calendar_df[(calendar_df["Fecha"] >= month_start) & (calendar_df["Fecha"] <= month_end)]
 
-week_view = calendar_df[
-    (calendar_df["Fecha"] >= start_week) & (calendar_df["Fecha"] <= end_week)
-]
+# Mostrar el mes
+st.subheader(f"Calendario de {month}")
 
-# Tabla de la semana
-st.subheader(f"Semana del {start_week.strftime('%d/%m/%Y')} al {end_week.strftime('%d/%m/%Y')}")
-st.dataframe(week_view, use_container_width=True)
+# Dividir el mes en semanas y mostrar los días
+days_of_week = ["L", "M", "X", "J", "V", "S", "D"]
+start_weekday = month_start.weekday()  # Día de la semana del primer día del mes
+days_in_month = (month_end - month_start).days + 1
+
+# Inicializar las columnas para el calendario
+columns = st.columns(7)
+
+# Mostrar los días de la semana
+for i, day in enumerate(days_of_week):
+    columns[i].write(day)
+
+# Mostrar el calendario del mes
+day_counter = 0
+for i in range(start_weekday):
+    columns[i].write("")  # Espacios vacíos antes del primer día del mes
+
+for i in range(day_counter, days_in_month + day_counter):
+    day_date = month_start + timedelta(days=i)
+    day_event = month_view[month_view["Fecha"] == day_date]["Evento"].values
+    event_text = day_event[0] if len(day_event) > 0 else ""
+    columns[(i + start_weekday) % 7].write(f"{day_date.day}\n{event_text}")
 
 # Agregar exámenes
 st.sidebar.subheader("Añadir examen")
@@ -61,9 +78,3 @@ if st.sidebar.button("Guardar examen"):
         st.sidebar.success(f"Examen '{examen_nombre}' guardado el {examen_fecha.strftime('%d/%m/%Y')}")
     else:
         st.sidebar.error("Fecha fuera del rango del calendario.")
-
-# Botón para ver todos los eventos
-if st.button("Ver todos los eventos"):
-    st.subheader("Todos los eventos registrados")
-    eventos = calendar_df[calendar_df["Evento"] != ""]
-    st.dataframe(eventos, use_container_width=True)
