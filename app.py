@@ -105,16 +105,23 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            button_style = f"""
+            button_html = f"""
             <button style="
                 background-color: {hex_color};
                 border: none;
                 border-radius: 50%;
-                width: 30px;
-                height: 30px;
+                width: 40px;
+                height: 40px;
                 cursor: pointer;">
             </button>
             """
+            col_selector[idx].markdown(button_html, unsafe_allow_html=True)
+            # Mostrar rectángulo con el color debajo del botón
+            col_selector[idx].markdown(
+                f"<div style='background-color: {hex_color}; width: 60px; height: 20px; border-radius: 3px; margin-top: 5px;'></div>", 
+                unsafe_allow_html=True
+            )
+
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
