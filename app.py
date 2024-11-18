@@ -71,23 +71,38 @@ def crear_calendario_interactivo(anio, mes):
                 )
 
 # Función para gestionar el formulario de eventos
-def agregar_evento():
+def gestionar_evento():
     if "selected_date" in st.session_state:
         fecha = st.session_state.selected_date
+        fecha_str = fecha.strftime("%Y-%m-%d")
         fecha_formato_texto = fecha.strftime("%d de %B de %Y").capitalize()
 
-        st.subheader(f"Añadir evento para el {fecha_formato_texto}")
-        with st.expander("Formulario para añadir evento"):
-            evento = st.text_input("Descripción del evento", key="nuevo_evento")
-            color = st.color_picker("Elige un color para este evento", "#FFCCCC")
+        st.subheader(f"Gestionar evento para el {fecha_formato_texto}")
+
+        evento_actual = st.session_state.eventos.get(fecha_str, None)
+
+        if evento_actual:
+            # Mostrar el evento actual y el botón para editar
+            st.write(f"**Evento actual**: {evento_actual['descripcion']}")
+            st.write(f"**Color actual**: {evento_actual['color']}")
+            if st.button("Editar evento"):
+                st.session_state.edit_mode = True
+        else:
+            # Añadir un nuevo evento
+            st.session_state.edit_mode = True
+
+        # Mostrar el formulario si estamos en modo edición
+        if "edit_mode" in st.session_state and st.session_state.edit_mode:
+            descripcion = st.text_input("Descripción del evento", value=evento_actual["descripcion"] if evento_actual else "")
+            color = st.color_picker("Elige un color para este evento", value=evento_actual["color"] if evento_actual else "#FFCCCC")
 
             if st.button("Guardar evento"):
-                if evento.strip():
-                    st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = {"descripcion": evento, "color": color}
+                if descripcion.strip():
+                    st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                     st.success(f"Evento guardado para el {fecha_formato_texto}")
+                    del st.session_state.edit_mode  # Salir del modo edición
                 else:
                     st.error("El evento no puede estar vacío.")
-                del st.session_state.selected_date
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
@@ -97,8 +112,8 @@ anio = st.sidebar.selectbox("Año", [2024, 2025])
 # Mostrar el calendario interactivo
 crear_calendario_interactivo(anio, mes)
 
-# Mostrar el formulario para añadir eventos si se seleccionó un día
-agregar_evento()
+# Gestionar el formulario para el evento
+gestionar_evento()
 
 # Mostrar todos los eventos registrados
 if st.button("Ver todos los eventos"):
