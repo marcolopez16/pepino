@@ -86,8 +86,9 @@ def gestionar_evento():
             if descripcion.strip():
                 # Guardar el evento y color
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
+                st.session_state.selected_date = None  # Restablecer selección
+                st.experimental_set_query_params(refresh=True)  # Forzar actualización visual
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
-                st.experimental_rerun()  # Refrescar la página
             else:
                 st.error("La descripción del evento no puede estar vacía.")
 
