@@ -37,6 +37,10 @@ st.sidebar.subheader("Selecciona una semana")
 start_week = st.sidebar.date_input("Inicio de la semana", value=datetime(2024, 1, 1))
 end_week = start_week + timedelta(days=6)
 
+# Convertir las fechas a formato datetime para evitar conflictos de tipos
+start_week = pd.to_datetime(start_week)
+end_week = pd.to_datetime(end_week)
+
 week_view = calendar_df[
     (calendar_df["Fecha"] >= start_week) & (calendar_df["Fecha"] <= end_week)
 ]
@@ -51,6 +55,7 @@ examen_fecha = st.sidebar.date_input("Fecha del examen")
 examen_nombre = st.sidebar.text_input("Nombre del examen")
 
 if st.sidebar.button("Guardar examen"):
+    examen_fecha = pd.to_datetime(examen_fecha)  # Asegurar compatibilidad de formato
     if examen_fecha in calendar_df["Fecha"].values:
         calendar_df.loc[calendar_df["Fecha"] == examen_fecha, "Evento"] = examen_nombre
         st.sidebar.success(f"Examen '{examen_nombre}' guardado el {examen_fecha.strftime('%d/%m/%Y')}")
