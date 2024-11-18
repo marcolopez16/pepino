@@ -8,7 +8,7 @@ st.title("Calendario Interactivo de Exámenes 2024-2025")
 # Traducción de los días y meses al español
 dias_semana = ["L", "M", "X", "J", "V", "S", "D"]
 meses_esp = {
-    1: "Enero", 2: "Febrero", 3: Marzo, 4: "Abril",
+    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
     5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
@@ -43,13 +43,13 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Botón del día
+                # Botón del día con color dinámico
                 if col.button(f"{dia}", key=f"boton_{fecha_str}"):
                     st.session_state.selected_date = fecha
 
                 # Mostrar etiqueta debajo del botón si hay evento
                 if "descripcion" in evento:
-                    descripcion_corta = " ".join(evento["descripcion"].split()[:2])
+                    descripcion_corta = " ".join(evento["descripcion"].split()[:2])  # Primeras dos palabras
                     col.markdown(
                         f"""
                         <div style="
