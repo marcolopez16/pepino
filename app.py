@@ -16,18 +16,18 @@ meses_esp = {
 
 # Fiestas importantes de España
 fiestas = {
-    "2024-10-12": "Día de la Hispanidad",
-    "2024-12-25": "Navidad",
-    "2025-03-29": "Domingo de Ramos",
-    "2025-04-03": "Jueves Santo",
-    "2025-04-04": "Viernes Santo",
-    "2025-04-20": "Día de San Jorge (Aragón)",
-    "2025-05-01": "Día del Trabajador",
+    "2024-10-12": ("Día de la Hispanidad", "#FFCCCC"),
+    "2024-12-25": ("Navidad", "#FFD700"),
+    "2025-03-29": ("Domingo de Ramos", "#90EE90"),
+    "2025-04-03": ("Jueves Santo", "#87CEEB"),
+    "2025-04-04": ("Viernes Santo", "#87CEEB"),
+    "2025-04-20": ("Día de San Jorge (Aragón)", "#FF4500"),
+    "2025-05-01": ("Día del Trabajador", "#FFA07A"),
 }
 
 # Inicializar eventos almacenados
 if "eventos" not in st.session_state:
-    st.session_state.eventos = {fecha: descripcion for fecha, descripcion in fiestas.items()}
+    st.session_state.eventos = {fecha: {"descripcion": descripcion, "color": color} for fecha, (descripcion, color) in fiestas.items()}
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
@@ -52,16 +52,22 @@ def crear_calendario_interactivo(anio, mes):
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
-                eventos_dia = st.session_state.eventos.get(fecha_str, "")
+                eventos_dia = st.session_state.eventos.get(fecha_str, {})
+                color = eventos_dia.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Mostrar el botón con color dinámico
-                if eventos_dia:
-                    if col.button(f"{dia}", key=f"boton_{fecha_str}", help=eventos_dia):
-                        st.session_state.selected_date = fecha
-                        st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
-                else:
-                    if col.button(f"{dia}", key=f"boton_{fecha_str}"):
-                        st.session_state.selected_date = fecha
+                # Botón con color dinámico
+                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=eventos_dia.get("descripcion", "")):
+                    st.session_state.selected_date = fecha
+                    st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
+                col.markdown(
+                    f"""<style>
+                    [key='boton_{fecha_str}'] {{
+                        background-color: {color};
+                        color: black;
+                    }}
+                    </style>""",
+                    unsafe_allow_html=True,
+                )
 
 # Función para añadir eventos
 def agregar_evento():
@@ -76,10 +82,11 @@ def agregar_evento():
 
         st.subheader(f"Añadir evento para el {fecha_formato_texto} ({fecha_formato_corto})")
         evento = st.text_input("Descripción del evento", key="nuevo_evento")
+        color = st.color_picker("Elige un color para este evento", "#FFCCCC")
 
         if st.button("Guardar evento"):
             if evento.strip():
-                st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = evento
+                st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = {"descripcion": evento, "color": color}
                 st.success(f"Evento añadido para el {fecha_formato_texto}")
             else:
                 st.error("El evento no puede estar vacío.")
@@ -103,4 +110,4 @@ if st.button("Ver todos los eventos"):
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
         dia_semana = dias_semana[fecha_obj.weekday()]  # Obtener día de la semana
         fecha_formateada = fecha_obj.strftime(f"%d de {meses_esp[fecha_obj.month]} de %Y ({dia_semana})")
-        st.write(f"**{fecha_formateada}**: {evento}")
+        st.write(f"**{fecha_formateada}**: {evento['descripcion']} (Color: {evento['color']})")
