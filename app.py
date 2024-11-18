@@ -82,6 +82,9 @@ def gestionar_evento():
         # Recuperar el evento actual si existe
         evento_actual = st.session_state.eventos.get(fecha_str, None)
 
+        if evento_actual:
+            st.write(f"**Evento actual:** {evento_actual['descripcion']}")
+
         # Mostrar el formulario directamente
         descripcion = st.text_input("Descripción del evento", value=evento_actual["descripcion"] if evento_actual else "")
         color = st.color_picker("Elige un color para este evento", value=evento_actual["color"] if evento_actual else "#FFCCCC")
