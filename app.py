@@ -4,7 +4,7 @@ import calendar
 from datetime import datetime, date
 
 # Configuración inicial
-st.title("Calendario de Exámenes 2024-2025")
+st.title("Calendario Interactivo de Exámenes 2024-2025")
 
 # Fiestas importantes de España
 fiestas = {
@@ -17,15 +17,19 @@ fiestas = {
     "2025-05-01": "Día del Trabajador",
 }
 
-# Función para generar un calendario
-def crear_calendario(anio, mes, eventos):
+# Inicializar eventos almacenados
+if "eventos" not in st.session_state:
+    st.session_state.eventos = {fecha: descripcion for fecha, descripcion in fiestas.items()}
+
+# Función para mostrar el calendario
+def crear_calendario_interactivo(anio, mes):
     cal = calendar.Calendar(firstweekday=0)
     dias_mes = cal.monthdayscalendar(anio, mes)
     nombre_mes = calendar.month_name[mes]
 
     # Mostrar el nombre del mes
     st.subheader(f"{nombre_mes} {anio}")
-    
+
     # Encabezados de los días de la semana
     cols = st.columns(7)
     dias_semana = ["L", "M", "X", "J", "V", "S", "D"]
@@ -40,29 +44,45 @@ def crear_calendario(anio, mes, eventos):
                 col.write("")
             else:
                 fecha = date(anio, mes, dia)
-                eventos_dia = eventos.get(fecha.strftime("%Y-%m-%d"), "")
+                fecha_str = fecha.strftime("%Y-%m-%d")
+                eventos_dia = st.session_state.eventos.get(fecha_str, "")
+
+                # Botón interactivo para cada día
+                if col.button(f"{dia}"):
+                    st.session_state.selected_date = fecha_str
+                
+                # Mostrar eventos debajo del día
                 if eventos_dia:
-                    col.markdown(f"**{dia}** 🎉")
                     col.caption(eventos_dia)
-                else:
-                    col.write(dia)
 
-# Crear un diccionario con eventos
-eventos = {fecha: descripcion for fecha, descripcion in fiestas.items()}
-
-# Agregar exámenes al diccionario de eventos
-st.sidebar.header("Añadir examen")
-examen_fecha = st.sidebar.date_input("Fecha del examen")
-examen_nombre = st.sidebar.text_input("Nombre del examen")
-
-if st.sidebar.button("Guardar examen"):
-    eventos[examen_fecha.strftime("%Y-%m-%d")] = examen_nombre
-    st.sidebar.success(f"Examen '{examen_nombre}' guardado para el {examen_fecha.strftime('%d/%m/%Y')}")
+# Función para añadir eventos
+def agregar_evento():
+    if "selected_date" in st.session_state:
+        fecha = st.session_state.selected_date
+        st.subheader(f"Añadir evento para el {fecha}")
+        evento = st.text_input("Descripción del evento", key="nuevo_evento")
+        
+        if st.button("Guardar evento"):
+            if evento.strip():
+                st.session_state.eventos[fecha] = evento
+                st.success(f"Evento añadido para el {fecha}")
+            else:
+                st.error("El evento no puede estar vacío.")
+            del st.session_state.selected_date
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
 mes = st.sidebar.selectbox("Mes", list(range(1, 13)), format_func=lambda x: calendar.month_name[x])
 anio = st.sidebar.selectbox("Año", [2024, 2025])
 
-# Mostrar el calendario
-crear_calendario(anio, mes, eventos)
+# Mostrar el calendario interactivo
+crear_calendario_interactivo(anio, mes)
+
+# Mostrar el formulario para añadir eventos si se seleccionó un día
+agregar_evento()
+
+# Mostrar todos los eventos registrados
+if st.button("Ver todos los eventos"):
+    st.subheader("Eventos registrados")
+    for fecha, evento in sorted(st.session_state.eventos.items()):
+        st.write(f"**{fecha}**: {evento}")
