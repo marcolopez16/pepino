@@ -54,27 +54,14 @@ def crear_calendario_interactivo(anio, mes):
                 fecha_str = fecha.strftime("%Y-%m-%d")
                 eventos_dia = st.session_state.eventos.get(fecha_str, "")
 
-                # Cambiar color del botón si hay un evento
-                color = "#FFCCCC" if eventos_dia else "#F0F0F0"  # Cambiar aquí el color
-                button_html = f"""
-                    <div style="text-align: center; margin: 0 auto;">
-                        <button style="
-                            background-color: {color}; 
-                            border: none; 
-                            padding: 10px 15px; 
-                            border-radius: 5px; 
-                            color: black; 
-                            cursor: pointer; 
-                            font-size: 14px;"
-                            onclick="window.location.reload()"
-                        >{dia}</button>
-                    </div>
-                """
-                col.markdown(button_html, unsafe_allow_html=True)
-
-                # Registrar selección de fecha
-                if st.button(f"Seleccionar {dia}", key=f"boton_{fecha_str}"):
-                    st.session_state.selected_date = fecha
+                # Mostrar el botón con color dinámico
+                if eventos_dia:
+                    if col.button(f"{dia}", key=f"boton_{fecha_str}", help=eventos_dia):
+                        st.session_state.selected_date = fecha
+                        st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
+                else:
+                    if col.button(f"{dia}", key=f"boton_{fecha_str}"):
+                        st.session_state.selected_date = fecha
 
 # Función para añadir eventos
 def agregar_evento():
