@@ -44,19 +44,19 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón con color dinámico
-                button_key = f"boton_{fecha_str}"
                 col.markdown(
                     f"""
-                    <button style="background-color:{color}; border:none; padding:10px; border-radius:5px; color:black; width:100%; cursor:pointer;">
+                    <button onclick="parent.document.querySelector('iframe').contentWindow.postMessage('{fecha_str}', '*');" style="background-color:{color}; border:none; padding:10px; border-radius:5px; color:black; width:100%; cursor:pointer;">
                         {dia}
                     </button>
                     """,
                     unsafe_allow_html=True,
                 )
 
-                if col.button(f"Seleccionar {dia}", key=button_key):
+                # Registrar la selección de fecha
+                if "iframe_event" in st.session_state and st.session_state.iframe_event == fecha_str:
                     st.session_state.selected_date = fecha
-                    st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
+                    st.session_state.iframe_event = None
 
 # Función para añadir eventos
 def agregar_evento():
