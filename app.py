@@ -55,20 +55,24 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón con color dinámico
-                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
-                    st.session_state.selected_date = fecha
+                button_html = f"""
+                <button style="
+                    background-color:{color}; 
+                    border:none; 
+                    padding:10px; 
+                    border-radius:5px; 
+                    color:black; 
+                    font-size:14px; 
+                    cursor:pointer;
+                    width:100%;"
+                    onclick="parent.document.querySelector('iframe').contentWindow.postMessage('{fecha_str}', '*')">
+                    {dia}
+                </button>
+                """
+                col.markdown(button_html, unsafe_allow_html=True)
 
-                col.markdown(
-                    f"""
-                    <style>
-                    [key='boton_{fecha_str}'] {{
-                        background-color: {color};
-                        color: black;
-                    }}
-                    </style>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                if col.button(f"Seleccionar {dia}", key=f"boton_{fecha_str}"):
+                    st.session_state.selected_date = fecha
 
 # Función para gestionar el formulario de eventos
 def gestionar_evento():
@@ -93,8 +97,7 @@ def gestionar_evento():
             if descripcion.strip():
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
-                # Actualizar color al instante
-                st.experimental_rerun()  # Refrescar para aplicar el color al calendario
+                st.experimental_rerun()  # Actualizar la interfaz para reflejar el color
             else:
                 st.error("El evento no puede estar vacío.")
 
