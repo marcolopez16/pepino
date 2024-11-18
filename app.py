@@ -73,12 +73,11 @@ def crear_calendario_interactivo(anio, mes):
                     color: white;  /* Texto de la etiqueta en blanco */
                     text-align: center;
                     padding: 5px;
-                    border: 2px solid gold;  /* Reborde dorado */
-                    border-radius: 10px;  /* Bordes redondeados */
+                    border-radius: 5px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
                     width: 60px;
-                    min-height: 10px;  /* Espacio reducido para la etiqueta */
+                    min-height: 15px;  /* Espacio reservado para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
                 </div>
@@ -109,14 +108,14 @@ def gestionar_evento():
             button_style = f"""
             <button style="
                 background-color: {hex_color};
-                border: 2px solid black;
+                border: none;
                 border-radius: 50%;
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
                 cursor: pointer;">
             </button>
             """
-            if col_selector[idx].markdown(button_style, unsafe_allow_html=True):
+            if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
         color_final = st.session_state.color_seleccionado
