@@ -98,9 +98,11 @@ def gestionar_evento():
 
         if st.button("Guardar evento"):
             if descripcion.strip():
+                # Guardar evento y color en el estado de la sesión
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
-                st.experimental_rerun()  # Actualizar la interfaz para reflejar el color
+                # Actualizar el calendario
+                st.experimental_rerun()
             else:
                 st.error("El evento no puede estar vacío.")
 
