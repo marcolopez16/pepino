@@ -13,6 +13,18 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
+# Colores disponibles
+colores_disponibles = {
+    "Rojo": "#FF0000",
+    "Azul": "#0000FF",
+    "Amarillo": "#FFFF00",
+    "Verde": "#008000",
+    "Rosa": "#FFC0CB",
+    "Naranja": "#FFA500",
+    "Negro": "#000000",
+    "Blanco": "#FFFFFF",
+}
+
 # Inicializar eventos almacenados
 if "eventos" not in st.session_state:
     st.session_state.eventos = {}
@@ -54,14 +66,14 @@ def crear_calendario_interactivo(anio, mes):
                 etiqueta_html = f"""
                 <div style="
                     background-color: {color if descripcion_corta else 'transparent'};
-                    color: black;
+                    color: white;  /* Texto de la etiqueta en blanco */
                     text-align: center;
                     padding: 2px;
                     border-radius: 5px;
                     font-size: 12px;
                     font-weight: bold;
                     width: 60px;
-                    min-height: 15px;
+                    min-height: 10px;  /* Espacio reducido para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
                 </div>
@@ -84,12 +96,13 @@ def gestionar_evento():
 
         # Mostrar el formulario para añadir o editar evento
         descripcion = st.text_input("Descripción del evento", value=evento_actual.get("descripcion", ""))
-        color = st.color_picker("Elige un color para este evento", value=evento_actual.get("color", "#FFCCCC"))
+        color = st.selectbox("Elige un color para este evento", list(colores_disponibles.keys()))
+        color_hex = colores_disponibles[color]  # Convertir a valor hexadecimal
 
         if st.button("Guardar evento"):
             if descripcion.strip():
                 # Guardar el evento y color
-                st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
+                st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color_hex}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
             else:
                 st.error("La descripción del evento no puede estar vacía.")
