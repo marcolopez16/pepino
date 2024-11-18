@@ -100,5 +100,7 @@ agregar_evento()
 if st.button("Ver todos los eventos"):
     st.subheader("Eventos registrados")
     for fecha, evento in sorted(st.session_state.eventos.items()):
-        fecha_formateada = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d-%m-%Y")
+        fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
+        dia_semana = dias_semana[fecha_obj.weekday()]  # Obtener día de la semana
+        fecha_formateada = fecha_obj.strftime(f"%d de {meses_esp[fecha_obj.month]} de %Y ({dia_semana})")
         st.write(f"**{fecha_formateada}**: {evento}")
