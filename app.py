@@ -54,12 +54,13 @@ def crear_calendario_interactivo(anio, mes):
                         f"""
                         <div style="
                             background-color: {color};
-                            color: white;
+                            color: black;
                             text-align: center;
                             padding: 2px;
                             border-radius: 5px;
-                            font-size: 10px;
-                            margin-top: 5px;">
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin-top: -3px;">  <!-- Más cerca del botón -->
                             {descripcion_corta}
                         </div>
                         """,
@@ -109,3 +110,4 @@ if st.button("Ver todos los eventos"):
         dia_semana = dias_semana[fecha_obj.weekday()]  # Obtener día de la semana
         fecha_formateada = fecha_obj.strftime(f"%d de {meses_esp[fecha_obj.month]} de %Y ({dia_semana})")
         st.write(f"**{fecha_formateada}**: {evento['descripcion']}")
+
