@@ -54,26 +54,28 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Hacer que el número sea el botón interactivo
-                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
-                    st.session_state.selected_date = fecha
+                # Crear un botón personalizado con HTML
+                button_html = f"""
+                <button style="
+                    background-color: {color};
+                    border: none;
+                    color: black;
+                    font-size: 14px;
+                    font-weight: bold;
+                    width: 100%;
+                    height: 50px;
+                    border-radius: 5px;
+                    cursor: pointer;"
+                    onclick="parent.document.querySelector('iframe').contentWindow.postMessage('{fecha_str}', '*')">
+                    {dia}
+                </button>
+                """
+                col.markdown(button_html, unsafe_allow_html=True)
 
-                # Aplicar el color al botón
-                col.markdown(
-                    f"""
-                    <style>
-                    button[key='boton_{fecha_str}'] {{
-                        background-color: {color};
-                        border-radius: 5px;
-                        color: black;
-                        font-weight: bold;
-                        border: none;
-                        cursor: pointer;
-                    }}
-                    </style>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                # Registrar la selección del día en Streamlit
+                if "iframe_event" in st.session_state and st.session_state.iframe_event == fecha_str:
+                    st.session_state.selected_date = fecha
+                    st.experimental_rerun()
 
 # Función para gestionar el formulario de eventos
 def gestionar_evento():
@@ -98,7 +100,7 @@ def gestionar_evento():
             if descripcion.strip():
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
-                st.session_state.updated = True  # Indicador de actualización
+                st.experimental_rerun()  # Actualizar la interfaz para reflejar el color
             else:
                 st.error("El evento no puede estar vacío.")
 
@@ -112,11 +114,6 @@ crear_calendario_interactivo(anio, mes)
 
 # Gestionar el formulario para el evento
 gestionar_evento()
-
-# Verificar si hay actualizaciones y refrescar
-if st.session_state.get("updated"):
-    del st.session_state.updated
-    st.experimental_rerun()
 
 # Mostrar todos los eventos registrados
 if st.button("Ver todos los eventos"):
