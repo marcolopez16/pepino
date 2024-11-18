@@ -100,4 +100,5 @@ agregar_evento()
 if st.button("Ver todos los eventos"):
     st.subheader("Eventos registrados")
     for fecha, evento in sorted(st.session_state.eventos.items()):
-        st.write(f"**{fecha}**: {evento}")
+        fecha_formateada = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d-%m-%Y")
+        st.write(f"**{fecha_formateada}**: {evento}")
