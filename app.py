@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import calendar
 from datetime import datetime, date
 
@@ -14,20 +13,9 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Fiestas importantes de España
-fiestas = {
-    "2024-10-12": ("Día de la Hispanidad", "#FFCCCC"),
-    "2024-12-25": ("Navidad", "#FFD700"),
-    "2025-03-29": ("Domingo de Ramos", "#90EE90"),
-    "2025-04-03": ("Jueves Santo", "#87CEEB"),
-    "2025-04-04": ("Viernes Santo", "#87CEEB"),
-    "2025-04-20": ("Día de San Jorge (Aragón)", "#FF4500"),
-    "2025-05-01": ("Día del Trabajador", "#FFA07A"),
-}
-
 # Inicializar eventos almacenados
 if "eventos" not in st.session_state:
-    st.session_state.eventos = {fecha: {"descripcion": descripcion, "color": color} for fecha, (descripcion, color) in fiestas.items()}
+    st.session_state.eventos = {}
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
@@ -52,22 +40,23 @@ def crear_calendario_interactivo(anio, mes):
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
-                eventos_dia = st.session_state.eventos.get(fecha_str, {})
-                color = eventos_dia.get("color", "#F0F0F0")  # Color predeterminado
+                evento = st.session_state.eventos.get(fecha_str, {})
+                color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón con color dinámico
-                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=eventos_dia.get("descripcion", "")):
-                    st.session_state.selected_date = fecha
-                    st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
+                button_key = f"boton_{fecha_str}"
                 col.markdown(
-                    f"""<style>
-                    [key='boton_{fecha_str}'] {{
-                        background-color: {color};
-                        color: black;
-                    }}
-                    </style>""",
+                    f"""
+                    <button style="background-color:{color}; border:none; padding:10px; border-radius:5px; color:black; width:100%; cursor:pointer;">
+                        {dia}
+                    </button>
+                    """,
                     unsafe_allow_html=True,
                 )
+
+                if col.button(f"Seleccionar {dia}", key=button_key):
+                    st.session_state.selected_date = fecha
+                    st.success(f"Seleccionaste el {fecha.strftime('%d/%m/%Y')}")
 
 # Función para añadir eventos
 def agregar_evento():
