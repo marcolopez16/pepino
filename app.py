@@ -8,7 +8,7 @@ st.title("Calendario Interactivo de Exámenes 2024-2025")
 # Traducción de los días y meses al español
 dias_semana = ["L", "M", "X", "J", "V", "S", "D"]
 meses_esp = {
-    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
+    1: "Enero", 2: "Febrero", 3: Marzo, 4: "Abril",
     5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
@@ -43,24 +43,28 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Botón del día con color dinámico
+                # Botón del día
                 if col.button(f"{dia}", key=f"boton_{fecha_str}"):
                     st.session_state.selected_date = fecha
 
-                # Aplicar color al botón
-                col.markdown(
-                    f"""
-                    <style>
-                    button[key="boton_{fecha_str}"] {{
-                        background-color: {color};
-                        color: black;
-                        border-radius: 5px;
-                        font-weight: bold;
-                    }}
-                    </style>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                # Mostrar etiqueta debajo del botón si hay evento
+                if "descripcion" in evento:
+                    descripcion_corta = " ".join(evento["descripcion"].split()[:2])
+                    col.markdown(
+                        f"""
+                        <div style="
+                            background-color: {color};
+                            color: white;
+                            text-align: center;
+                            padding: 2px;
+                            border-radius: 5px;
+                            font-size: 10px;
+                            margin-top: 5px;">
+                            {descripcion_corta}
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
 # Función para gestionar el evento seleccionado
 def gestionar_evento():
@@ -74,11 +78,7 @@ def gestionar_evento():
         # Recuperar el evento actual si existe
         evento_actual = st.session_state.eventos.get(fecha_str, {})
 
-        # Mostrar el evento actual
-        if evento_actual:
-            st.write(f"**Evento actual:** {evento_actual['descripcion']}")
-
-        # Formulario para añadir/editar evento
+        # Mostrar el formulario para añadir o editar evento
         descripcion = st.text_input("Descripción del evento", value=evento_actual.get("descripcion", ""))
         color = st.color_picker("Elige un color para este evento", value=evento_actual.get("color", "#FFCCCC"))
 
@@ -86,8 +86,6 @@ def gestionar_evento():
             if descripcion.strip():
                 # Guardar el evento y color
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
-                st.session_state.selected_date = None  # Restablecer selección
-                st.experimental_set_query_params(refresh=True)  # Forzar actualización visual
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
             else:
                 st.error("La descripción del evento no puede estar vacía.")
