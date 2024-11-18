@@ -49,8 +49,8 @@ def crear_calendario_interactivo(anio, mes):
 
                 # Botón interactivo para cada día
                 if col.button(f"{dia}"):
-                    st.session_state.selected_date = fecha_str
-                
+                    st.session_state.selected_date = fecha
+
                 # Mostrar eventos debajo del día
                 if eventos_dia:
                     col.caption(eventos_dia)
@@ -59,13 +59,16 @@ def crear_calendario_interactivo(anio, mes):
 def agregar_evento():
     if "selected_date" in st.session_state:
         fecha = st.session_state.selected_date
-        st.subheader(f"Añadir evento para el {fecha}")
+        fecha_formato_texto = fecha.strftime("%d de %B de %Y").capitalize()
+        fecha_formato_corto = fecha.strftime("%d-%m-%Y")
+
+        st.subheader(f"Añadir evento para el {fecha_formato_texto} ({fecha_formato_corto})")
         evento = st.text_input("Descripción del evento", key="nuevo_evento")
-        
+
         if st.button("Guardar evento"):
             if evento.strip():
-                st.session_state.eventos[fecha] = evento
-                st.success(f"Evento añadido para el {fecha}")
+                st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = evento
+                st.success(f"Evento añadido para el {fecha_formato_texto}")
             else:
                 st.error("El evento no puede estar vacío.")
             del st.session_state.selected_date
