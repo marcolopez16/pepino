@@ -29,6 +29,10 @@ colores_disponibles = {
 if "eventos" not in st.session_state:
     st.session_state.eventos = {}
 
+# Inicializar selección de color actual
+if "color_seleccionado" not in st.session_state:
+    st.session_state.color_seleccionado = "#FFFFFF"
+
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
     cal = calendar.Calendar(firstweekday=0)
@@ -97,13 +101,30 @@ def gestionar_evento():
 
         # Mostrar el formulario para añadir o editar evento
         descripcion = st.text_input("Descripción del evento", value=evento_actual.get("descripcion", ""))
-        color = st.selectbox("Elige un color para este evento", list(colores_disponibles.keys()))
-        color_hex = colores_disponibles[color]  # Convertir a valor hexadecimal
+
+        # Selector visual de colores
+        st.write("Elige un color para este evento:")
+        col_selector = st.columns(len(colores_disponibles))
+        for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
+            button_style = f"""
+            <button style="
+                background-color: {hex_color};
+                border: 2px solid black;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;">
+            </button>
+            """
+            if col_selector[idx].markdown(button_style, unsafe_allow_html=True):
+                st.session_state.color_seleccionado = hex_color
+
+        color_final = st.session_state.color_seleccionado
 
         if st.button("Guardar evento"):
             if descripcion.strip():
                 # Guardar el evento y color
-                st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color_hex}
+                st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color_final}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
             else:
                 st.error("La descripción del evento no puede estar vacía.")
