@@ -79,30 +79,19 @@ def gestionar_evento():
 
         st.subheader(f"Gestionar evento para el {fecha_formato_texto}")
 
+        # Recuperar el evento actual si existe
         evento_actual = st.session_state.eventos.get(fecha_str, None)
 
-        if evento_actual:
-            # Mostrar el evento actual y el botón para editar
-            st.write(f"**Evento actual**: {evento_actual['descripcion']}")
-            st.write(f"**Color actual**: {evento_actual['color']}")
-            if st.button("Editar evento"):
-                st.session_state.edit_mode = True
-        else:
-            # Añadir un nuevo evento
-            st.session_state.edit_mode = True
+        # Mostrar el formulario directamente
+        descripcion = st.text_input("Descripción del evento", value=evento_actual["descripcion"] if evento_actual else "")
+        color = st.color_picker("Elige un color para este evento", value=evento_actual["color"] if evento_actual else "#FFCCCC")
 
-        # Mostrar el formulario si estamos en modo edición
-        if "edit_mode" in st.session_state and st.session_state.edit_mode:
-            descripcion = st.text_input("Descripción del evento", value=evento_actual["descripcion"] if evento_actual else "")
-            color = st.color_picker("Elige un color para este evento", value=evento_actual["color"] if evento_actual else "#FFCCCC")
-
-            if st.button("Guardar evento"):
-                if descripcion.strip():
-                    st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
-                    st.success(f"Evento guardado para el {fecha_formato_texto}")
-                    del st.session_state.edit_mode  # Salir del modo edición
-                else:
-                    st.error("El evento no puede estar vacío.")
+        if st.button("Guardar evento"):
+            if descripcion.strip():
+                st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
+                st.success(f"Evento guardado para el {fecha_formato_texto}")
+            else:
+                st.error("El evento no puede estar vacío.")
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
