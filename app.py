@@ -55,49 +55,39 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón con color dinámico
-                button_html = f"""
-                <button style="
-                    background-color:{color}; 
-                    border:none; 
-                    padding:10px; 
-                    border-radius:5px; 
-                    color:black; 
-                    font-size:14px; 
-                    cursor:pointer;
-                    width:100%;"
-                    onclick="parent.document.querySelector('iframe').contentWindow.postMessage('{fecha_str}', '*')">
-                    {dia}
-                </button>
-                """
-                col.markdown(button_html, unsafe_allow_html=True)
-
-                # Registrar fecha seleccionada
-                if "iframe_event" in st.session_state and st.session_state.iframe_event == fecha_str:
+                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
                     st.session_state.selected_date = fecha
-                    st.session_state.iframe_event = None
 
-# Función para añadir eventos
+                col.markdown(
+                    f"""
+                    <style>
+                    [key='boton_{fecha_str}'] {{
+                        background-color: {color};
+                        color: black;
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+# Función para gestionar el formulario de eventos
 def agregar_evento():
     if "selected_date" in st.session_state:
         fecha = st.session_state.selected_date
         fecha_formato_texto = fecha.strftime("%d de %B de %Y").capitalize()
-        fecha_formato_corto = fecha.strftime("%d-%m-%Y")
 
-        # Reemplazar los nombres de los meses con el diccionario español
-        for numero_mes, nombre_mes in meses_esp.items():
-            fecha_formato_texto = fecha_formato_texto.replace(fecha.strftime("%B"), nombre_mes)
+        st.subheader(f"Añadir evento para el {fecha_formato_texto}")
+        with st.expander("Formulario para añadir evento"):
+            evento = st.text_input("Descripción del evento", key="nuevo_evento")
+            color = st.color_picker("Elige un color para este evento", "#FFCCCC")
 
-        st.subheader(f"Añadir evento para el {fecha_formato_texto} ({fecha_formato_corto})")
-        evento = st.text_input("Descripción del evento", key="nuevo_evento")
-        color = st.color_picker("Elige un color para este evento", "#FFCCCC")
-
-        if st.button("Guardar evento"):
-            if evento.strip():
-                st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = {"descripcion": evento, "color": color}
-                st.success(f"Evento añadido para el {fecha_formato_texto}")
-            else:
-                st.error("El evento no puede estar vacío.")
-            del st.session_state.selected_date
+            if st.button("Guardar evento"):
+                if evento.strip():
+                    st.session_state.eventos[fecha.strftime("%Y-%m-%d")] = {"descripcion": evento, "color": color}
+                    st.success(f"Evento guardado para el {fecha_formato_texto}")
+                else:
+                    st.error("El evento no puede estar vacío.")
+                del st.session_state.selected_date
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
@@ -117,4 +107,4 @@ if st.button("Ver todos los eventos"):
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
         dia_semana = dias_semana[fecha_obj.weekday()]  # Obtener día de la semana
         fecha_formateada = fecha_obj.strftime(f"%d de {meses_esp[fecha_obj.month]} de %Y ({dia_semana})")
-        st.write(f"**{fecha_formateada}**: {evento['descripcion']} (Color: {evento['color']})")
+        st.write(f"**{fecha_formateada}**: {evento['descripcion']}")
