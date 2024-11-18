@@ -93,6 +93,8 @@ def gestionar_evento():
             if descripcion.strip():
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
+                # Actualizar color al instante
+                st.experimental_rerun()  # Refrescar para aplicar el color al calendario
             else:
                 st.error("El evento no puede estar vacío.")
 
