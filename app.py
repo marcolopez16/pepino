@@ -13,9 +13,20 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
+# Fiestas importantes de España
+fiestas = {
+    "2024-10-12": {"descripcion": "Día de la Hispanidad", "color": "#FFCCCC"},
+    "2024-12-25": {"descripcion": "Navidad", "color": "#FFD700"},
+    "2025-03-29": {"descripcion": "Domingo de Ramos", "color": "#90EE90"},
+    "2025-04-03": {"descripcion": "Jueves Santo", "color": "#87CEEB"},
+    "2025-04-04": {"descripcion": "Viernes Santo", "color": "#87CEEB"},
+    "2025-04-20": {"descripcion": "Día de San Jorge (Aragón)", "color": "#FF4500"},
+    "2025-05-01": {"descripcion": "Día del Trabajador", "color": "#FFA07A"},
+}
+
 # Inicializar eventos almacenados
 if "eventos" not in st.session_state:
-    st.session_state.eventos = {}
+    st.session_state.eventos = fiestas.copy()  # Cargar fiestas al inicio
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
@@ -40,8 +51,8 @@ def crear_calendario_interactivo(anio, mes):
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
-                eventos_dia = st.session_state.eventos.get(fecha_str, {})
-                color = eventos_dia.get("color", "#F0F0F0")  # Color predeterminado
+                evento = st.session_state.eventos.get(fecha_str, {})
+                color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón con color dinámico
                 button_html = f"""
