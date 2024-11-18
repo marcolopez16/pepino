@@ -68,8 +68,9 @@ def crear_calendario_interactivo(anio, mes):
                     background-color: {color if descripcion_corta else 'transparent'};
                     color: white;  /* Texto de la etiqueta en blanco */
                     text-align: center;
-                    padding: 2px;
-                    border-radius: 5px;
+                    padding: 5px;
+                    border: 2px solid gold;  /* Reborde dorado */
+                    border-radius: 10px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
                     width: 60px;
