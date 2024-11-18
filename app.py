@@ -29,7 +29,7 @@ def crear_calendario_interactivo(anio, mes):
     # Encabezados de los días de la semana
     cols = st.columns(7)
     for col, dia in zip(cols, dias_semana):
-        col.markdown(f"**{dia}**", unsafe_allow_html=True)
+        col.markdown(f"<div style='text-align: center; font-weight: bold;'>{dia}</div>", unsafe_allow_html=True)
 
     # Mostrar los días del mes
     for semana in dias_mes:
@@ -37,7 +37,7 @@ def crear_calendario_interactivo(anio, mes):
         for col, dia in zip(cols, semana):
             # Crear un espacio reservado para cada botón
             col.markdown(
-                "<div style='height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;'>",
+                "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center;'>",
                 unsafe_allow_html=True,
             )
 
@@ -50,7 +50,7 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón del día con color dinámico
-                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
+                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=f"Día {dia}"):
                     st.session_state.selected_date = fecha
 
                 # Mostrar etiqueta debajo del botón si hay evento
@@ -60,13 +60,13 @@ def crear_calendario_interactivo(anio, mes):
                     background-color: {color if descripcion_corta else 'transparent'};
                     color: black;
                     text-align: center;
-                    padding: 5px;
+                    padding: 2px;
                     border-radius: 5px;
                     font-size: 12px;
                     font-weight: bold;
-                    width: 100%;
-                    min-height: 20px;  /* Espacio reservado para etiquetas */
-                    margin-top: 5px;">
+                    width: 80%;  /* Ancho de la etiqueta */
+                    min-height: 15px;  /* Espacio reservado para etiquetas */
+                    margin-top: 2px;">
                     {descripcion_corta}
                 </div>
                 """
