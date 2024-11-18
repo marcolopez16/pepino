@@ -13,20 +13,9 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Fiestas importantes de España
-fiestas = {
-    "2024-10-12": {"descripcion": "Día de la Hispanidad", "color": "#FFCCCC"},
-    "2024-12-25": {"descripcion": "Navidad", "color": "#FFD700"},
-    "2025-03-29": {"descripcion": "Domingo de Ramos", "color": "#90EE90"},
-    "2025-04-03": {"descripcion": "Jueves Santo", "color": "#87CEEB"},
-    "2025-04-04": {"descripcion": "Viernes Santo", "color": "#87CEEB"},
-    "2025-04-20": {"descripcion": "Día de San Jorge (Aragón)", "color": "#FF4500"},
-    "2025-05-01": {"descripcion": "Día del Trabajador", "color": "#FFA07A"},
-}
-
 # Inicializar eventos almacenados
 if "eventos" not in st.session_state:
-    st.session_state.eventos = fiestas.copy()  # Cargar fiestas al inicio
+    st.session_state.eventos = {}
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
@@ -54,28 +43,26 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Crear un botón personalizado con HTML
+                # Botón del día con color dinámico
                 if col.button(f"{dia}", key=f"boton_{fecha_str}"):
                     st.session_state.selected_date = fecha
 
-                # Aplicar el color al botón
+                # Aplicar color al botón
                 col.markdown(
                     f"""
                     <style>
-                    button[key='boton_{fecha_str}'] {{
+                    button[key="boton_{fecha_str}"] {{
                         background-color: {color};
-                        border-radius: 5px;
                         color: black;
+                        border-radius: 5px;
                         font-weight: bold;
-                        border: none;
-                        cursor: pointer;
                     }}
                     </style>
                     """,
                     unsafe_allow_html=True,
                 )
 
-# Función para gestionar el formulario de eventos
+# Función para gestionar el evento seleccionado
 def gestionar_evento():
     if "selected_date" in st.session_state:
         fecha = st.session_state.selected_date
@@ -85,25 +72,24 @@ def gestionar_evento():
         st.subheader(f"Gestionar evento para el {fecha_formato_texto}")
 
         # Recuperar el evento actual si existe
-        evento_actual = st.session_state.eventos.get(fecha_str, None)
+        evento_actual = st.session_state.eventos.get(fecha_str, {})
 
-        # Mostrar el evento actual (si existe)
+        # Mostrar el evento actual
         if evento_actual:
             st.write(f"**Evento actual:** {evento_actual['descripcion']}")
 
-        # Formulario para añadir/editar un evento
-        descripcion = st.text_input("Descripción del evento", value=evento_actual["descripcion"] if evento_actual else "")
-        color = st.color_picker("Elige un color para este evento", value=evento_actual["color"] if evento_actual else "#FFCCCC")
+        # Formulario para añadir/editar evento
+        descripcion = st.text_input("Descripción del evento", value=evento_actual.get("descripcion", ""))
+        color = st.color_picker("Elige un color para este evento", value=evento_actual.get("color", "#FFCCCC"))
 
         if st.button("Guardar evento"):
             if descripcion.strip():
-                # Guardar evento en el estado de la sesión
+                # Guardar el evento y color
                 st.session_state.eventos[fecha_str] = {"descripcion": descripcion, "color": color}
                 st.success(f"Evento guardado para el {fecha_formato_texto}")
-                # Actualizar el calendario automáticamente
-                st.experimental_rerun()
+                st.experimental_rerun()  # Refrescar la página
             else:
-                st.error("El evento no puede estar vacío.")
+                st.error("La descripción del evento no puede estar vacía.")
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
@@ -113,7 +99,7 @@ anio = st.sidebar.selectbox("Año", [2024, 2025])
 # Mostrar el calendario interactivo
 crear_calendario_interactivo(anio, mes)
 
-# Gestionar el formulario para el evento seleccionado
+# Gestionar el evento seleccionado
 gestionar_evento()
 
 # Mostrar todos los eventos registrados
