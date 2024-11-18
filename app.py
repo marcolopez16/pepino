@@ -35,6 +35,12 @@ def crear_calendario_interactivo(anio, mes):
     for semana in dias_mes:
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
+            # Crear un espacio reservado para cada botón
+            col.markdown(
+                "<div style='height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;'>",
+                unsafe_allow_html=True,
+            )
+
             if dia == 0:  # Día vacío
                 col.write("")
             else:
@@ -48,24 +54,26 @@ def crear_calendario_interactivo(anio, mes):
                     st.session_state.selected_date = fecha
 
                 # Mostrar etiqueta debajo del botón si hay evento
-                if "descripcion" in evento:
-                    descripcion_corta = " ".join(evento["descripcion"].split()[:2])  # Primeras dos palabras
-                    col.markdown(
-                        f"""
-                        <div style="
-                            background-color: {color};
-                            color: black;
-                            text-align: center;
-                            padding: 2px;
-                            border-radius: 5px;
-                            font-size: 12px;
-                            font-weight: bold;
-                            margin-top: -3px;">  <!-- Más cerca del botón -->
-                            {descripcion_corta}
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+                descripcion_corta = " ".join(evento.get("descripcion", "").split()[:2])
+                etiqueta = f"""
+                <div style="
+                    background-color: {color if descripcion_corta else 'transparent'};
+                    color: black;
+                    text-align: center;
+                    padding: 5px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    width: 100%;
+                    min-height: 20px;  /* Espacio reservado para etiquetas */
+                    margin-top: 5px;">
+                    {descripcion_corta}
+                </div>
+                """
+                col.markdown(etiqueta, unsafe_allow_html=True)
+
+            # Cerrar el contenedor del botón y etiqueta
+            col.markdown("</div>", unsafe_allow_html=True)
 
 # Función para gestionar el evento seleccionado
 def gestionar_evento():
@@ -110,4 +118,3 @@ if st.button("Ver todos los eventos"):
         dia_semana = dias_semana[fecha_obj.weekday()]  # Obtener día de la semana
         fecha_formateada = fecha_obj.strftime(f"%d de {meses_esp[fecha_obj.month]} de %Y ({dia_semana})")
         st.write(f"**{fecha_formateada}**: {evento['descripcion']}")
-
