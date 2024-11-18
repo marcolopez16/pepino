@@ -27,18 +27,16 @@ def crear_calendario_interactivo(anio, mes):
     st.subheader(f"{nombre_mes} {anio}")
 
     # Encabezados de los días de la semana
-    cols = st.columns(7, gap="small")
+    cols = st.columns(7)
     for col, dia in zip(cols, dias_semana):
         col.markdown(f"<div style='text-align: center; font-weight: bold;'>{dia}</div>", unsafe_allow_html=True)
 
     # Mostrar los días del mes
     for semana in dias_mes:
-        cols = st.columns(7, gap="small")
+        cols = st.columns(7)
         for col, dia in zip(cols, semana):
-            col.markdown(
-                "<div style='display: flex; flex-direction: column; align-items: center; justify-content: center;'>",
-                unsafe_allow_html=True,
-            )
+            col.markdown("<div style='display: flex; flex-direction: column; align-items: center;'>", unsafe_allow_html=True)
+
             if dia == 0:  # Día vacío
                 col.write("")
             else:
@@ -47,28 +45,11 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Botón cuadrado del día
-                button_html = f"""
-                <button style="
-                    width: 60px;
-                    height: 60px;
-                    background-color: {color};
-                    color: black;
-                    border: none;
-                    border-radius: 5px;
-                    font-size: 16px;
-                    font-weight: bold;
-                    text-align: center;
-                    cursor: pointer;">
-                    {dia}
-                </button>
-                """
-                if col.button(f"", key=f"boton_{fecha_str}"):
+                # El número como botón
+                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
                     st.session_state.selected_date = fecha
 
-                col.markdown(button_html, unsafe_allow_html=True)
-
-                # Etiqueta debajo del botón si hay evento
+                # Etiqueta debajo del número
                 descripcion_corta = " ".join(evento.get("descripcion", "").split()[:2])
                 etiqueta_html = f"""
                 <div style="
@@ -94,7 +75,7 @@ def gestionar_evento():
     if "selected_date" in st.session_state:
         fecha = st.session_state.selected_date
         fecha_str = fecha.strftime("%Y-%m-%d")
-        fecha_formato_texto = fecha.strftime("%d de %B de %Y").capitalize()
+        fecha_formato_texto = fecha.strftime(f"%d de {meses_esp[fecha.month]} de %Y")  # Mes en español
 
         st.subheader(f"Gestionar evento para el {fecha_formato_texto}")
 
