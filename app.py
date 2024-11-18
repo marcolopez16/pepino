@@ -54,25 +54,27 @@ def crear_calendario_interactivo(anio, mes):
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # Botón con color dinámico
-                button_html = f"""
-                <button style="
-                    background-color:{color}; 
-                    border:none; 
-                    padding:10px; 
-                    border-radius:5px; 
-                    color:black; 
-                    font-size:14px; 
-                    cursor:pointer;
-                    width:100%;"
-                    onclick="parent.document.querySelector('iframe').contentWindow.postMessage('{fecha_str}', '*')">
-                    {dia}
-                </button>
-                """
-                col.markdown(button_html, unsafe_allow_html=True)
-
-                if col.button(f"Seleccionar {dia}", key=f"boton_{fecha_str}"):
+                # Hacer que el número sea el botón interactivo
+                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=evento.get("descripcion", "")):
                     st.session_state.selected_date = fecha
+                    st.experimental_rerun()  # Refrescar para actualizar la selección y el color
+
+                # Aplicar el color al botón
+                col.markdown(
+                    f"""
+                    <style>
+                    button[key='boton_{fecha_str}'] {{
+                        background-color: {color};
+                        border-radius: 5px;
+                        color: black;
+                        font-weight: bold;
+                        border: none;
+                        cursor: pointer;
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
 # Función para gestionar el formulario de eventos
 def gestionar_evento():
