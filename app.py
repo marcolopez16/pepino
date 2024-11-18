@@ -6,6 +6,14 @@ from datetime import datetime, date
 # Configuración inicial
 st.title("Calendario Interactivo de Exámenes 2024-2025")
 
+# Traducción de los días y meses al español
+dias_semana = ["L", "M", "X", "J", "V", "S", "D"]
+meses_esp = {
+    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
+    5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
+    9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+}
+
 # Fiestas importantes de España
 fiestas = {
     "2024-10-12": "Día de la Hispanidad",
@@ -25,14 +33,13 @@ if "eventos" not in st.session_state:
 def crear_calendario_interactivo(anio, mes):
     cal = calendar.Calendar(firstweekday=0)
     dias_mes = cal.monthdayscalendar(anio, mes)
-    nombre_mes = calendar.month_name[mes]
+    nombre_mes = meses_esp[mes]
 
     # Mostrar el nombre del mes
     st.subheader(f"{nombre_mes} {anio}")
 
     # Encabezados de los días de la semana
     cols = st.columns(7)
-    dias_semana = ["L", "M", "X", "J", "V", "S", "D"]
     for col, dia in zip(cols, dias_semana):
         col.markdown(f"**{dia}**", unsafe_allow_html=True)
 
@@ -62,6 +69,10 @@ def agregar_evento():
         fecha_formato_texto = fecha.strftime("%d de %B de %Y").capitalize()
         fecha_formato_corto = fecha.strftime("%d-%m-%Y")
 
+        # Reemplazar los nombres de los meses con el diccionario español
+        for numero_mes, nombre_mes in meses_esp.items():
+            fecha_formato_texto = fecha_formato_texto.replace(fecha.strftime("%B"), nombre_mes)
+
         st.subheader(f"Añadir evento para el {fecha_formato_texto} ({fecha_formato_corto})")
         evento = st.text_input("Descripción del evento", key="nuevo_evento")
 
@@ -75,7 +86,7 @@ def agregar_evento():
 
 # Selección de mes y año
 st.sidebar.header("Seleccionar mes y año")
-mes = st.sidebar.selectbox("Mes", list(range(1, 13)), format_func=lambda x: calendar.month_name[x])
+mes = st.sidebar.selectbox("Mes", list(range(1, 13)), format_func=lambda x: meses_esp[x])
 anio = st.sidebar.selectbox("Año", [2024, 2025])
 
 # Mostrar el calendario interactivo
