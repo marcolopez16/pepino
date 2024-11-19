@@ -42,6 +42,22 @@ def crear_calendario_interactivo(anio, mes):
     # Mostrar el nombre del mes
     st.subheader(f"{nombre_mes} {anio}")
 
+    # Aplicar estilos CSS para hacer que los botones sean más grandes y del mismo tamaño
+    button_style = """
+    <style>
+        .stButton>button {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+    """
+    st.markdown(button_style, unsafe_allow_html=True)
+
     # Encabezados de los días de la semana
     cols = st.columns(7)
     for col, dia in zip(cols, dias_semana):
