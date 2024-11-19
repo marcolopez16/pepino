@@ -42,12 +42,12 @@ def crear_calendario_interactivo(anio, mes):
     # Mostrar el nombre del mes
     st.subheader(f"{nombre_mes} {anio}")
 
-    # Aplicar estilos CSS para hacer que los botones sean más grandes y del mismo tamaño
+    # Estilos CSS solo para los botones de los días de la semana (más grandes)
     button_style = """
     <style>
         .stButton>button {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             font-size: 18px;
             margin: 5px;
             padding: 10px;
@@ -121,7 +121,7 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Mostrar rectángulo con el color debajo del botón
+            # Mostrar rectángulo con el color debajo del nombre
             col_selector[idx].markdown(
                 f"<div style='background-color: {hex_color}; width: 60px; height: 20px; border-radius: 3px; margin-top: 5px;'></div>", 
                 unsafe_allow_html=True
