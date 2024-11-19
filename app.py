@@ -43,7 +43,7 @@ def crear_calendario_interactivo(anio, mes):
     button_style_dias = """
     <style>
         .boton-dia {
-            width: 600px;
+            width: 300px;
             height: 300px;
             font-size: 18px;
             margin: 10px;
@@ -74,7 +74,7 @@ def crear_calendario_interactivo(anio, mes):
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
             if dia == 0:  # Día vacío
-                col.markdown("<div style='width: 600px; height: 300px;'></div>", unsafe_allow_html=True)
+                col.markdown("<div style='width: 300px; height: 300px;'></div>", unsafe_allow_html=True)
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
@@ -96,7 +96,7 @@ def crear_calendario_interactivo(anio, mes):
                     border-radius: 5px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
-                    width: 600px;
+                    width: 300px;
                     min-height: 20px;  /* Espacio reservado para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
