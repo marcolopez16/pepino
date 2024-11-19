@@ -13,16 +13,16 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Colores disponibles (colores más claros de crema)
+# Colores disponibles (colores cremosos más claros)
 colores_disponibles = {
-    "Rojo Claro": "#FFCCCC",  # Rojo más suave
-    "Azul Claro": "#A7C7E7",  # Azul suave
-    "Amarillo Claro": "#FFF5A5",  # Amarillo suave
-    "Verde Claro": "#A8D8A1",  # Verde suave
-    "Rosa Claro": "#F8D3D3",  # Rosa suave
-    "Naranja Claro": "#FFE1B3",  # Naranja suave
-    "Negro Claro": "#D3D3D3",  # Negro suave (gris oscuro)
-    "Blanco Roto": "#F4F4F4",  # Blanco roto
+    "Rojo": "#FFCCCC",  # Rojo suave
+    "Azul": "#A7C7E7",  # Azul suave
+    "Amarillo": "#FFF5A5",  # Amarillo suave
+    "Verde": "#A8D8A1",  # Verde suave
+    "Rosa": "#F8D3D3",  # Rosa suave
+    "Naranja": "#FFE1B3",  # Naranja suave
+    "Negro": "#D3D3D3",  # Gris oscuro (negro suave)
+    "Blanco": "#F4F4F4",  # Blanco roto
 }
 
 # Inicializar eventos almacenados
@@ -112,7 +112,7 @@ def gestionar_evento():
             )
 
             # Cuando el usuario hace clic en el nombre del color, seleccionamos el color correspondiente
-            if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
+            if col_selector[idx].button(f"<span style='font-size: 10px;'>{nombre}</span>", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
         color_final = st.session_state.color_seleccionado
