@@ -54,6 +54,12 @@ def crear_calendario_interactivo(anio, mes):
             border-radius: 10px;
             text-align: center;
         }
+
+        .stButton>button {
+            width: auto;
+            height: auto;
+            font-size: 16px;
+        }
     </style>
     """
     st.markdown(button_style, unsafe_allow_html=True)
