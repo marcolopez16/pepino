@@ -43,7 +43,7 @@ def crear_calendario_interactivo(anio, mes):
     st.subheader(f"{nombre_mes} {anio}")
 
     # Estilos CSS solo para los botones de los días de la semana (más grandes)
-    button_style = """
+    button_style_dias = """
     <style>
         .stButton>button {
             width: 60px;
@@ -54,15 +54,9 @@ def crear_calendario_interactivo(anio, mes):
             border-radius: 10px;
             text-align: center;
         }
-
-        .stButton>button {
-            width: auto;
-            height: auto;
-            font-size: 16px;
-        }
     </style>
     """
-    st.markdown(button_style, unsafe_allow_html=True)
+    st.markdown(button_style_dias, unsafe_allow_html=True)
 
     # Encabezados de los días de la semana
     cols = st.columns(7)
@@ -127,14 +121,8 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Mostrar rectángulo con el color debajo del nombre
-            col_selector[idx].markdown(
-                f"<div style='background-color: {hex_color}; width: 60px; height: 20px; border-radius: 3px; margin-top: 5px;'></div>", 
-                unsafe_allow_html=True
-            )
-
-            # Cuando el usuario hace clic en el nombre del color, seleccionamos el color correspondiente
-            if col_selector[idx].button(f"<span style='font-size: 10px;'>{nombre}</span>", key=f"color_{hex_color}"):
+            # Botón con el color y texto adaptado para "Amarillo"
+            if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
         color_final = st.session_state.color_seleccionado
