@@ -42,7 +42,7 @@ def crear_calendario_interactivo(anio, mes):
     # Mostrar el nombre del mes
     st.subheader(f"{nombre_mes} {anio}")
 
-    # Estilos CSS solo para los botones de los días de la semana (más grandes)
+    # Estilos CSS para los botones de los días del calendario (más grandes y uniformes)
     button_style_dias = """
     <style>
         .stButton>button {
@@ -57,6 +57,32 @@ def crear_calendario_interactivo(anio, mes):
     </style>
     """
     st.markdown(button_style_dias, unsafe_allow_html=True)
+
+    # Estilos CSS para los botones de los colores (adaptados al tamaño del texto)
+    button_style_colores = """
+    <style>
+        .stButton>button {
+            width: auto;
+            height: auto;
+            font-size: 14px;  /* Tamaño de letra normal */
+            padding: 10px;
+        }
+    </style>
+    """
+    st.markdown(button_style_colores, unsafe_allow_html=True)
+
+    # Estilos CSS para los botones de "Guardar evento" y "Ver todos los eventos" (tamaño automático ajustado al texto)
+    button_style_eventos = """
+    <style>
+        .stButton>button {
+            width: auto;
+            height: auto;
+            font-size: 14px;
+            padding: 10px;
+        }
+    </style>
+    """
+    st.markdown(button_style_eventos, unsafe_allow_html=True)
 
     # Encabezados de los días de la semana
     cols = st.columns(7)
@@ -121,7 +147,7 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Mostrar botones de color con el nombre del color
+            # Botón de color
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
