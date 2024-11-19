@@ -13,16 +13,16 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Colores disponibles
+# Colores disponibles (tonos cremosos)
 colores_disponibles = {
-    "Rojo": "#FF0000",
-    "Azul": "#0000FF",
-    "Amarillo": "#FFFF00",
-    "Verde": "#008000",
-    "Rosa": "#FFC0CB",
-    "Naranja": "#FFA500",
-    "Negro": "#000000",
-    "Blanco": "#FFFFFF",
+    "Crema Claro": "#FFF5E1",
+    "Crema": "#F5E1A4",
+    "Beige": "#F0E6D2",
+    "Piel Claro": "#FAD6A5",
+    "Naranja Claro": "#FFE0B3",
+    "Amarillo Claro": "#FFF8B2",
+    "Blanco Roto": "#F4F4F4",
+    "Gris Claro": "#DCDCDC",
 }
 
 # Inicializar eventos almacenados
@@ -31,7 +31,7 @@ if "eventos" not in st.session_state:
 
 # Inicializar selección de color actual
 if "color_seleccionado" not in st.session_state:
-    st.session_state.color_seleccionado = "#FFFFFF"
+    st.session_state.color_seleccionado = "#FFF5E1"
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
@@ -105,23 +105,13 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            button_html = f"""
-            <button style="
-                background-color: {hex_color};
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                cursor: pointer;">
-            </button>
-            """
-            col_selector[idx].markdown(button_html, unsafe_allow_html=True)
             # Mostrar rectángulo con el color debajo del botón
             col_selector[idx].markdown(
                 f"<div style='background-color: {hex_color}; width: 60px; height: 20px; border-radius: 3px; margin-top: 5px;'></div>", 
                 unsafe_allow_html=True
             )
 
+            # Cuando el usuario hace clic en el nombre del color, seleccionamos el color correspondiente
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
