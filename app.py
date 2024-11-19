@@ -43,11 +43,12 @@ def crear_calendario_interactivo(anio, mes):
     button_style_dias = """
     <style>
         .boton-dia {
-            width: 36px;
-            height: 18px;
-            font-size: 12px;
+            width: 300px;
+            height: 80px;
+            font-size: 18px;
             margin: 5px;
-            border-radius: 5px;
+            padding: 10px;
+            border-radius: 10px;
             text-align: center;
             background-color: #FFFFFF;
             border: 1px solid #CCCCCC;
@@ -73,7 +74,7 @@ def crear_calendario_interactivo(anio, mes):
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
             if dia == 0:  # Día vacío
-                col.markdown("<div style='width: 36px; height: 18px;'></div>", unsafe_allow_html=True)
+                col.markdown("<div style='width: 300px; height: 80px;'></div>", unsafe_allow_html=True)
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
@@ -81,24 +82,22 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón de cada día con clase CSS personalizada
-                boton_html = f"""
-                <button class="boton-dia" onclick="alert('Evento: {evento.get('descripcion', '')}')">{dia}</button>
-                """
-                col.markdown(boton_html, unsafe_allow_html=True)
+                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
+                    st.session_state.selected_date = fecha
 
                 # Etiqueta debajo del número
                 descripcion_corta = " ".join(evento.get("descripcion", "").split()[:2])
                 etiqueta_html = f"""
                 <div style="
                     background-color: {color if descripcion_corta else 'transparent'};
-                    color: white;  /* Texto de la etiqueta en blanco */
+                    color: black;  /* Texto de la etiqueta en negro */
                     text-align: center;
                     padding: 5px;
                     border-radius: 5px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
-                    width: 36px;
-                    min-height: 15px;  /* Espacio reservado para la etiqueta */
+                    width: 300px;
+                    min-height: 20px;  /* Espacio reservado para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
                 </div>
@@ -124,7 +123,7 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Mostrar botones de color con el nombre del color
+            # Botón de color
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
