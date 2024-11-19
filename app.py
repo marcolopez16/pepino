@@ -43,10 +43,10 @@ def crear_calendario_interactivo(anio, mes):
     button_style_dias = """
     <style>
         .boton-dia {
-            width: 300px;
-            height: 80px;
+            width: 600px;
+            height: 300px;
             font-size: 18px;
-            margin: 5px;
+            margin: 10px;
             padding: 10px;
             border-radius: 10px;
             text-align: center;
@@ -74,7 +74,7 @@ def crear_calendario_interactivo(anio, mes):
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
             if dia == 0:  # Día vacío
-                col.markdown("<div style='width: 300px; height: 80px;'></div>", unsafe_allow_html=True)
+                col.markdown("<div style='width: 600px; height: 300px;'></div>", unsafe_allow_html=True)
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
@@ -96,7 +96,7 @@ def crear_calendario_interactivo(anio, mes):
                     border-radius: 5px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
-                    width: 300px;
+                    width: 600px;
                     min-height: 20px;  /* Espacio reservado para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
@@ -123,7 +123,12 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Botón de color
+            # Mostrar etiqueta con muestra de color encima del botón del color
+            col_selector[idx].markdown(
+                f"<div style='background-color: {hex_color}; width: 60px; height: 20px; margin-bottom: 5px;'></div>", 
+                unsafe_allow_html=True
+            )
+            # Mostrar el botón del color
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
