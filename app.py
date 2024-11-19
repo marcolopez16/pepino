@@ -13,7 +13,7 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Colores disponibles (colores cremosos más claros)
+# Colores disponibles
 colores_disponibles = {
     "Rojo": "#FFCCCC",  # Rojo suave
     "Azul": "#A7C7E7",  # Azul suave
@@ -39,13 +39,10 @@ def crear_calendario_interactivo(anio, mes):
     dias_mes = cal.monthdayscalendar(anio, mes)
     nombre_mes = meses_esp[mes]
 
-    # Mostrar el nombre del mes
-    st.subheader(f"{nombre_mes} {anio}")
-
-    # Estilos CSS para los botones de los días del calendario (más grandes y uniformes)
+    # Estilos CSS para los botones de los días del calendario
     button_style_dias = """
     <style>
-        .stButton>button {
+        .boton-dia {
             width: 60px;
             height: 60px;
             font-size: 18px;
@@ -53,36 +50,19 @@ def crear_calendario_interactivo(anio, mes):
             padding: 10px;
             border-radius: 10px;
             text-align: center;
+            background-color: #FFFFFF;
+            border: 1px solid #CCCCCC;
+            cursor: pointer;
+        }
+        .boton-dia:hover {
+            background-color: #F0F0F0;
         }
     </style>
     """
     st.markdown(button_style_dias, unsafe_allow_html=True)
 
-    # Estilos CSS para los botones de los colores (adaptados al tamaño del texto)
-    button_style_colores = """
-    <style>
-        .stButton>button {
-            width: auto;
-            height: auto;
-            font-size: 14px;  /* Tamaño de letra normal */
-            padding: 10px;
-        }
-    </style>
-    """
-    st.markdown(button_style_colores, unsafe_allow_html=True)
-
-    # Estilos CSS para los botones de "Guardar evento" y "Ver todos los eventos" (tamaño automático ajustado al texto)
-    button_style_eventos = """
-    <style>
-        .stButton>button {
-            width: auto;
-            height: auto;
-            font-size: 14px;
-            padding: 10px;
-        }
-    </style>
-    """
-    st.markdown(button_style_eventos, unsafe_allow_html=True)
+    # Mostrar el nombre del mes
+    st.subheader(f"{nombre_mes} {anio}")
 
     # Encabezados de los días de la semana
     cols = st.columns(7)
@@ -93,18 +73,16 @@ def crear_calendario_interactivo(anio, mes):
     for semana in dias_mes:
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
-            col.markdown("<div style='display: flex; flex-direction: column; align-items: center;'>", unsafe_allow_html=True)
-
             if dia == 0:  # Día vacío
-                col.write("")
+                col.markdown("<div style='width: 60px; height: 60px;'></div>", unsafe_allow_html=True)
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
                 evento = st.session_state.eventos.get(fecha_str, {})
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
-                # El número como botón
-                if col.button(f"{dia}", key=f"boton_{fecha_str}"):
+                # Botón de cada día con clase CSS personalizada
+                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=f"Evento: {evento.get('descripcion', '')}"):
                     st.session_state.selected_date = fecha
 
                 # Etiqueta debajo del número
@@ -126,8 +104,6 @@ def crear_calendario_interactivo(anio, mes):
                 """
                 col.markdown(etiqueta_html, unsafe_allow_html=True)
 
-            col.markdown("</div>", unsafe_allow_html=True)
-
 # Función para gestionar el evento seleccionado
 def gestionar_evento():
     if "selected_date" in st.session_state:
@@ -147,7 +123,7 @@ def gestionar_evento():
         st.write("Elige un color para este evento:")
         col_selector = st.columns(len(colores_disponibles))
         for idx, (nombre, hex_color) in enumerate(colores_disponibles.items()):
-            # Botón de color
+            # Mostrar botones de color con el nombre del color
             if col_selector[idx].button(f"{nombre}", key=f"color_{hex_color}"):
                 st.session_state.color_seleccionado = hex_color
 
