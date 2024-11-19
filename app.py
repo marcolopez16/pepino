@@ -13,16 +13,16 @@ meses_esp = {
     9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
 }
 
-# Colores disponibles (tonos cremosos)
+# Colores disponibles (colores más claros de crema)
 colores_disponibles = {
-    "Crema Claro": "#FFF5E1",
-    "Crema": "#F5E1A4",
-    "Beige": "#F0E6D2",
-    "Piel Claro": "#FAD6A5",
-    "Naranja Claro": "#FFE0B3",
-    "Amarillo Claro": "#FFF8B2",
-    "Blanco Roto": "#F4F4F4",
-    "Gris Claro": "#DCDCDC",
+    "Rojo Claro": "#FFCCCC",  # Rojo más suave
+    "Azul Claro": "#A7C7E7",  # Azul suave
+    "Amarillo Claro": "#FFF5A5",  # Amarillo suave
+    "Verde Claro": "#A8D8A1",  # Verde suave
+    "Rosa Claro": "#F8D3D3",  # Rosa suave
+    "Naranja Claro": "#FFE1B3",  # Naranja suave
+    "Negro Claro": "#D3D3D3",  # Negro suave (gris oscuro)
+    "Blanco Roto": "#F4F4F4",  # Blanco roto
 }
 
 # Inicializar eventos almacenados
@@ -31,7 +31,7 @@ if "eventos" not in st.session_state:
 
 # Inicializar selección de color actual
 if "color_seleccionado" not in st.session_state:
-    st.session_state.color_seleccionado = "#FFF5E1"
+    st.session_state.color_seleccionado = "#FFF5A5"  # Color inicial
 
 # Función para mostrar el calendario
 def crear_calendario_interactivo(anio, mes):
