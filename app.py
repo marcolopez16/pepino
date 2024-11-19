@@ -43,12 +43,11 @@ def crear_calendario_interactivo(anio, mes):
     button_style_dias = """
     <style>
         .boton-dia {
-            width: 60px;
-            height: 60px;
-            font-size: 18px;
+            width: 36px;
+            height: 18px;
+            font-size: 12px;
             margin: 5px;
-            padding: 10px;
-            border-radius: 10px;
+            border-radius: 5px;
             text-align: center;
             background-color: #FFFFFF;
             border: 1px solid #CCCCCC;
@@ -74,7 +73,7 @@ def crear_calendario_interactivo(anio, mes):
         cols = st.columns(7)
         for col, dia in zip(cols, semana):
             if dia == 0:  # Día vacío
-                col.markdown("<div style='width: 60px; height: 60px;'></div>", unsafe_allow_html=True)
+                col.markdown("<div style='width: 36px; height: 18px;'></div>", unsafe_allow_html=True)
             else:
                 fecha = date(anio, mes, dia)
                 fecha_str = fecha.strftime("%Y-%m-%d")
@@ -82,8 +81,10 @@ def crear_calendario_interactivo(anio, mes):
                 color = evento.get("color", "#F0F0F0")  # Color predeterminado
 
                 # Botón de cada día con clase CSS personalizada
-                if col.button(f"{dia}", key=f"boton_{fecha_str}", help=f"Evento: {evento.get('descripcion', '')}"):
-                    st.session_state.selected_date = fecha
+                boton_html = f"""
+                <button class="boton-dia" onclick="alert('Evento: {evento.get('descripcion', '')}')">{dia}</button>
+                """
+                col.markdown(boton_html, unsafe_allow_html=True)
 
                 # Etiqueta debajo del número
                 descripcion_corta = " ".join(evento.get("descripcion", "").split()[:2])
@@ -96,7 +97,7 @@ def crear_calendario_interactivo(anio, mes):
                     border-radius: 5px;  /* Bordes redondeados */
                     font-size: 12px;
                     font-weight: bold;
-                    width: 60px;
+                    width: 36px;
                     min-height: 15px;  /* Espacio reservado para la etiqueta */
                     margin-top: 5px;">
                     {descripcion_corta}
